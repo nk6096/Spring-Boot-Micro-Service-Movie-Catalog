@@ -1,10 +1,14 @@
-package com.springmicroservice.movieinfoservice.models;
+package com.springmicroservice.moviecatalogservice.models;
 
 public class Movie {
 
 	private String movieName;
 	private String info;
 
+	public Movie() {
+		
+	}
+	
 	public Movie(String movieName, String info) {
 		this.movieName = movieName;
 		this.info = info;
