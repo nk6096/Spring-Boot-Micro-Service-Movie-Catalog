@@ -29,6 +29,16 @@ public class MovieCatalogResource {
 	
 	@Autowired
 	private MovieListService movieListService;
+	
+	private Rating rating;
+	
+	private static int ratingMovie;
+	
+	private Movie movie;
+	
+	private static String movieName;
+	
+	private static String movieDesc;
 
 	@RequestMapping("/{userId}")
 	public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
@@ -36,8 +46,21 @@ public class MovieCatalogResource {
 		List<String> movieList = movieListService.getMovieList(userId);
 		
 		return movieList.stream().map(movieId -> {
-			Movie movie = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, Movie.class);
-			Rating rating = restTemplate.getForObject("http://localhost:8084/ratingsdata/" + movieId, Rating.class);
+			
+			try {
+				movie = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, Movie.class);
+				movieName = movie.getMovieName();
+				movieDesc = movie.getInfo();
+			} catch(Exception ex) {
+				movieName = "Unable to fetch movie name";
+				movieDesc = "Unable to fecth movie desciption";
+			}
+			try {
+				rating = restTemplate.getForObject("http://localhost:8084/ratingsdata/" + movieId, Rating.class);
+				ratingMovie = rating.getRating();
+			} catch(Exception ex) {
+				ratingMovie = -1;
+			}
 			
 			// another way to make api call using web client(Reactive programming in java).
 			/*Movie movie = webClientBuilder.build()
@@ -47,7 +70,7 @@ public class MovieCatalogResource {
 					.bodyToMono(Movie.class)
 					.block();*/
 			
-			return new CatalogItem(movie.getMovieName(), movie.getInfo(), rating.getRating());
+			return new CatalogItem(movieName, movieDesc, ratingMovie);
 			})
 			.collect(Collectors.toList());
 
