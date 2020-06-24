@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,9 @@ public class MovieCatalogResource {
 	//private WebClient.Builder webClientBuilder;
 	
 	@Autowired
+	private DiscoveryClient discoveryClient;
+	
+	@Autowired
 	private MovieListService movieListService;
 	
 	private Rating rating;
@@ -48,7 +52,7 @@ public class MovieCatalogResource {
 		return movieList.stream().map(movieId -> {
 			
 			try {
-				movie = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, Movie.class);
+				movie = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, Movie.class);
 				movieName = movie.getMovieName();
 				movieDesc = movie.getInfo();
 			} catch(Exception ex) {
@@ -56,7 +60,7 @@ public class MovieCatalogResource {
 				movieDesc = "Unable to fecth movie desciption";
 			}
 			try {
-				rating = restTemplate.getForObject("http://localhost:8084/ratingsdata/" + movieId, Rating.class);
+				rating = restTemplate.getForObject("http://movie-ratings-service/ratingsdata/" + movieId, Rating.class);
 				ratingMovie = rating.getRating();
 			} catch(Exception ex) {
 				ratingMovie = -1;
