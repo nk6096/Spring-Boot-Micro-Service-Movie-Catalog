@@ -13,6 +13,10 @@ Steps:
     1.b. Run the following commands in the terminal/command line to build the app:
         - mvn clean install
     1.c. Run the following command(s) in the terminal/command line to run the app:
-        - java -jar ./target/spring-boot-in-docker.jar
+        - java -jar microserice jar path.
+    1.d. Run all three microservices and discovery-server through terminal/command one by one using above command(s).
 
-2. Go to http://localhost:8082/ in your browser to view it.
+2. Go to http://localhost:8082/catalog/{userId} in your browser to view entry microservice.
+
+3. All three microservices and discovery-server is running on different port(s) as they are running on different tomcat instances.
+
